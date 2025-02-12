@@ -24,6 +24,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator"
 
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
@@ -77,13 +78,13 @@ export default function DeleteUserForm({ className = "" }) {
                         you wish to retain.
                     </CardDescription>
                 </CardHeader>
-                <CardFooter>
+                <CardFooter className="p-6 ">
                     {/* <Button onClick={confirmUserDeletion}>
                         Delete Account
                     </Button> */}
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button>Delete Account</Button>
+                            <Button type="submit">Delete Account</Button>
                         </DialogTrigger>
                         <DialogContent>
                             <DialogHeader>

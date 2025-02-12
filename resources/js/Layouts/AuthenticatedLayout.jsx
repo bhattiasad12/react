@@ -22,6 +22,7 @@ import {
 import { ModeToggle } from "@/Components/mode-toggle";
 import { UserNav } from "@/Components/user-nav";
 import { ScrollArea } from "@/Components/ui/scroll-area";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function AuthenticatedLayout({ header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
@@ -31,7 +32,6 @@ export default function AuthenticatedLayout({ header, children }) {
             <AppSidebar variant="floating" />
             <ScrollArea className="h-full w-full flex-1 [&>[data-radix-scroll-area-viewport]]:max-h-[calc(100vh-10px)]">
                 <SidebarInset className="px-4">
-                    {/* Floating Header Section */}
                     <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pt-2">
                         <header className="flex h-16 items-center gap-4 rounded-lg border bg-card p-4 text-card-foreground shadow-sm ">
                             <div className="container mx-auto flex justify-between items-center">
@@ -71,6 +71,7 @@ export default function AuthenticatedLayout({ header, children }) {
                         {children}
                     </div>
                 </SidebarInset>
+                <Toaster />
             </ScrollArea>
         </SidebarProvider>
     );

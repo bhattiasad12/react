@@ -16,6 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator"
+
 export default function UpdatePasswordForm({ className = "" }) {
     const passwordInput = useRef();
     const currentPasswordInput = useRef();
@@ -63,7 +65,7 @@ export default function UpdatePasswordForm({ className = "" }) {
                         Ensure your account is using a long, random password to
                         stay secure.
                     </CardDescription>
-                </CardHeader>
+                </CardHeader>{" "}
                 <form onSubmit={updatePassword} className="mt-6 space-y-6">
                     <CardContent>
                         <div className="flex flex-col gap-6">

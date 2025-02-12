@@ -15,7 +15,12 @@ export default function Edit({ mustVerifyEmail, status }) {
         >
             <Head title="Profile" />
 
-            <div className="space-y-6">
+            <div className="space-y-6 flex-1 p-6 mx-auto">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-3xl font-bold tracking-tight">
+                        {"Edit Profile"}
+                    </h2>
+                </div>
                 <UpdateProfileInformationForm
                     mustVerifyEmail={mustVerifyEmail}
                     status={status}

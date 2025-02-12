@@ -28,7 +28,7 @@ export function UserNav() {
             <DropdownMenuTrigger asChild>
                 <Button
                     variant="ghost"
-                    className="relative h-8 w-8 rounded-full"
+                    className="relative h-8 w-8 rounded-lg"
                 >
                     <Avatar className="h-8 w-8 rounded-lg">
                         <AvatarImage
@@ -60,7 +60,7 @@ export function UserNav() {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <Link href={route("profile.edit")} className="w-full">
-                        <DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer">
                             {" "}
                             <UserRoundPen />
                             Profile
@@ -74,7 +74,7 @@ export function UserNav() {
                     as="button"
                     className="w-full"
                 >
-                    <DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer">
                         <LogOut />
                         Log Out
                     </DropdownMenuItem>

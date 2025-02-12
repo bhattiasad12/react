@@ -1,212 +1,117 @@
-"use client";
-
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import { useFieldArray, useForm } from "react-hook-form";
-// import { z } from "zod";
-
-import { cn } from "@/lib/utils";
-// import { toast } from "@/Components/hooks/use-toast";
-import { Button } from "@/Components/ui/button";
+import { Head, Link, router, useForm } from "@inertiajs/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { Separator } from "@/Components/ui/separator";
 import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/Components/ui/form";
-import { Input } from "@/Components/ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/Components/ui/select";
-import { Textarea } from "@/Components/ui/textarea";
-import { Link } from "@inertiajs/react";
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import InputError from "@/Components/InputError";
 
-const profileFormSchema = z.object({
-    username: z
-        .string()
-        .min(2, {
-            message: "Username must be at least 2 characters.",
-        })
-        .max(30, {
-            message: "Username must not be longer than 30 characters.",
-        }),
-    email: z
-        .string({
-            required_error: "Please select an email to display.",
-        })
-        .email(),
-    bio: z.string().max(160).min(4),
-    urls: z
-        .array(
-            z.object({
-                value: z.string().url({ message: "Please enter a valid URL." }),
-            })
-        )
-        .optional(),
-});
-
-// This can come from your database or API.
-const defaultValues = {
-    bio: "I own a computer.",
-    urls: [
-        { value: "https://shadcn.com" },
-        { value: "http://twitter.com/shadcn" },
-    ],
-};
-
-export function ProfileForm() {
-    const form =
-        useForm <
-        ProfileFormValues >
-        {
-            resolver: zodResolver(profileFormSchema),
-            defaultValues,
-            mode: "onChange",
-        };
-
-    const { fields, append } = useFieldArray({
-        name: "urls",
-        control: form.control,
-    });
-
-    function onSubmit(data) {
-        toast({
-            title: "You submitted the following values:",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">
-                        {JSON.stringify(data, null, 2)}
-                    </code>
-                </pre>
-            ),
+export default function PostForm() {
+    const { toast } = useToast();
+    const { data, setData, post, errors, processing, recentlySuccessful } =
+        useForm({
+            title: "",
+            content: "",
         });
-    }
+
+    const submit = (e) => {
+        e.preventDefault();
+
+        post(route("posts.store"));
+    };
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+
+    //     const formData = new FormData(e.target);
+    //     const url = post
+    //         ? route("posts.update", post.id)
+    //         : route("posts.store");
+
+    //     router.post(url, formData, {
+    //         onSuccess: () => {
+    //             toast({
+    //                 title: "Success",
+    //                 description: post
+    //                     ? "Your post has been updated."
+    //                     : "Your post has been created.",
+    //                 duration: 3000,
+    //             });
+    //         },
+    //         onError: (errors) => {
+    //             toast({
+    //                 title: "Error",
+    //                 description: "There was an error submitting the form.",
+    //                 variant: "destructive",
+    //                 duration: 3000,
+    //             });
+    //         },
+    //     });
+    // };
 
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <FormField
-                    control={form.control}
-                    name="username"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Username</FormLabel>
-                            <FormControl>
-                                <Input placeholder="shadcn" {...field} />
-                            </FormControl>
-                            <FormDescription>
-                                This is your public display name. It can be your
-                                real name or a pseudonym. You can only change
-                                this once every 30 days.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                            >
-                                <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a verified email to display" />
-                                    </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    <SelectItem value="m@example.com">
-                                        m@example.com
-                                    </SelectItem>
-                                    <SelectItem value="m@google.com">
-                                        m@google.com
-                                    </SelectItem>
-                                    <SelectItem value="m@support.com">
-                                        m@support.com
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <FormDescription>
-                                You can manage verified email addresses in your{" "}
-                                <Link href="/examples/forms">
-                                    email settings
-                                </Link>
-                                .
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="bio"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Bio</FormLabel>
-                            <FormControl>
-                                <Textarea
-                                    placeholder="Tell us a little bit about yourself"
-                                    className="resize-none"
-                                    {...field}
-                                />
-                            </FormControl>
-                            <FormDescription>
-                                You can <span>@mention</span> other users and
-                                organizations to link to them.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <div>
-                    {fields.map((field, index) => (
-                        <FormField
-                            control={form.control}
-                            key={field.id}
-                            name={`urls.${index}.value`}
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel
-                                        className={cn(index !== 0 && "sr-only")}
-                                    >
-                                        URLs
-                                    </FormLabel>
-                                    <FormDescription
-                                        className={cn(index !== 0 && "sr-only")}
-                                    >
-                                        Add links to your website, blog, or
-                                        social media profiles.
-                                    </FormDescription>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    ))}
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="mt-2"
-                        onClick={() => append({ value: "" })}
-                    >
-                        Add URL
-                    </Button>
+        <AuthenticatedLayout>
+            <div className="flex-1 space-y-4 p-6">
+                <Head title={post ? "Edit Post" : "Create Post"} />
+
+                <div className="flex items-center justify-between">
+                    <h2 className="text-3xl font-bold tracking-tight">
+                        {post ? "Edit Post" : "Create Post"}
+                    </h2>
                 </div>
-                <Button type="submit">Update profile</Button>
-            </form>
-        </Form>
+                <Card>
+                    {/* <CardHeader>
+                        <CardTitle>Profile Information</CardTitle>
+                        <CardDescription>
+                            Update your account's profile information and email
+                            address.
+                        </CardDescription>
+                    </CardHeader> */}
+                    {/* <Separator/> */}
+                    <form onSubmit={submit} className="mt-6 space-y-6">
+                        <CardContent>
+                            <div className="space-y-2">
+                                <Label htmlFor="title">Title</Label>
+                                <Input
+                                    id="title"
+                                    name="title"
+                                    placeholder="Enter the post title"
+                                />{" "}
+                                <InputError
+                                    message={errors.title}
+                                    className="mt-2"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="content">Content</Label>
+                                <Textarea
+                                    id="content"
+                                    name="content"
+                                    placeholder="Enter the post content"
+                                    rows={12}
+                                />{" "}
+                                <InputError
+                                    message={errors.content}
+                                    className="mt-2"
+                                />
+                            </div>
+                        </CardContent>
+                        <CardFooter>
+                            <Button type="submit">Save</Button>
+                        </CardFooter>
+                    </form>
+                </Card>
+            </div>
+        </AuthenticatedLayout>
     );
 }

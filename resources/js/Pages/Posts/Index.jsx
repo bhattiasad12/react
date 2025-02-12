@@ -40,10 +40,12 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Index({ posts, filters }) {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [postToDelete, setPostToDelete] = useState(null);
+    const { toast } = useToast();
 
     const debouncedSearch = useCallback(
         debounce((value) => {
@@ -72,6 +74,11 @@ export default function Index({ posts, filters }) {
                 onSuccess: () => {
                     setIsDeleteDialogOpen(false);
                     setPostToDelete(null);
+                    toast({
+                        title: "Success",
+                        description: "Your post has been deleted.",
+                        duration: 3000,
+                    });
                 },
             });
         }
@@ -90,7 +97,9 @@ export default function Index({ posts, filters }) {
                 <div className="flex items-center justify-between">
                     <h2 className="text-3xl font-bold tracking-tight">Posts</h2>
                     <div className="flex items-center space-x-2">
-                        <Button>Add Post</Button>
+                        <Link href={route("posts.create")}>
+                            <Button>Add Post</Button>
+                        </Link>{" "}
                     </div>
                 </div>
 
@@ -130,30 +139,32 @@ export default function Index({ posts, filters }) {
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
+                                                    <DropdownMenuTrigger
+                                                        asChild
+                                                    >
                                                         <Button variant="ghost">
                                                             <MoreHorizontal />
                                                             <span className="sr-only">
                                                                 Open menu
                                                             </span>
-                                                        </Button>   
+                                                        </Button>
                                                     </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end" className="w-[160px]">
-                                                        <DropdownMenuItem>
+                                                    <DropdownMenuContent
+                                                        align="end"
+                                                        className="w-[160px]"
+                                                    >
+                                                        <DropdownMenuItem className="cursor-pointer">
                                                             <Edit className="mr-2 h-4 w-4" />
                                                             Edit
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem>
-                                                            <Copy className="mr-2 h-4 w-4" />
-                                                            Make a copy
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem>
-                                                            <Star className="mr-2 h-4 w-4" />
-                                                            Favorite
-                                                        </DropdownMenuItem>
+                                                       
                                                         <DropdownMenuItem
-                                                            onClick={() => handleDeleteClick(post.id)}
-                                                            className="focus:text-red-600"
+                                                            onClick={() =>
+                                                                handleDeleteClick(
+                                                                    post.id
+                                                                )
+                                                            }
+                                                            className="cursor-pointer focus:text-red-600"
                                                         >
                                                             <Trash2 className="mr-2 h-4 w-4" />
                                                             Delete
@@ -168,7 +179,10 @@ export default function Index({ posts, filters }) {
                                     ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan="100%" className="h-24 text-center">
+                                        <TableCell
+                                            colSpan="100%"
+                                            className="h-24 text-center"
+                                        >
                                             No results.
                                         </TableCell>
                                     </TableRow>
@@ -183,13 +197,28 @@ export default function Index({ posts, filters }) {
                                 ? posts.links.map((link, index) =>
                                       link.url ? (
                                           <PaginationItem key={index}>
-                                              {link.label.includes("Previous") ? (
-                                                  <PaginationPrevious href={link.url} />
-                                              ) : link.label.includes("Next") ? (
-                                                  <PaginationNext href={link.url} />
+                                              {link.label.includes(
+                                                  "Previous"
+                                              ) ? (
+                                                  <PaginationPrevious
+                                                      href={link.url}
+                                                  />
+                                              ) : link.label.includes(
+                                                    "Next"
+                                                ) ? (
+                                                  <PaginationNext
+                                                      href={link.url}
+                                                  />
                                               ) : (
-                                                  <PaginationLink href={link.url} isActive={link.active}>
-                                                      <span dangerouslySetInnerHTML={{ __html: link.label }} />
+                                                  <PaginationLink
+                                                      href={link.url}
+                                                      isActive={link.active}
+                                                  >
+                                                      <span
+                                                          dangerouslySetInnerHTML={{
+                                                              __html: link.label,
+                                                          }}
+                                                      />
                                                   </PaginationLink>
                                               )}
                                           </PaginationItem>
@@ -197,7 +226,9 @@ export default function Index({ posts, filters }) {
                                           <PaginationItem key={index}>
                                               <span
                                                   className="cursor-not-allowed text-gray-400"
-                                                  dangerouslySetInnerHTML={{ __html: link.label }}
+                                                  dangerouslySetInnerHTML={{
+                                                      __html: link.label,
+                                                  }}
                                               />
                                           </PaginationItem>
                                       )
@@ -209,12 +240,16 @@ export default function Index({ posts, filters }) {
             </div>
 
             {/* Delete Confirmation Dialog */}
-            <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+            <AlertDialog
+                open={isDeleteDialogOpen}
+                onOpenChange={setIsDeleteDialogOpen}
+            >
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the post.
+                            This action cannot be undone. This will permanently
+                            delete the post.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
